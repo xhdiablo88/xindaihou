@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/xindaihou.iml" filepath="$PROJECT_DIR$/.idea/xindaihou.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xindaihou-bean/xindaihou-bean.iml" filepath="$PROJECT_DIR$/xindaihou-bean/xindaihou-bean.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xindaihou-common-util/xindaihou-common-util.iml" filepath="$PROJECT_DIR$/xindaihou-common-util/xindaihou-common-util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xindaihou-interface/xindaihou-interface.iml" filepath="$PROJECT_DIR$/xindaihou-interface/xindaihou-interface.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xindaihou-manage-service/xindaihou-manage-service.iml" filepath="$PROJECT_DIR$/xindaihou-manage-service/xindaihou-manage-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xindaihou-manage-web/xindaihou-manage-web.iml" filepath="$PROJECT_DIR$/xindaihou-manage-web/xindaihou-manage-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xindaihou-parent/xindaihou-parent.iml" filepath="$PROJECT_DIR$/xindaihou-parent/xindaihou-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xindaihou-service-util/xindaihou-service-util.iml" filepath="$PROJECT_DIR$/xindaihou-service-util/xindaihou-service-util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xindaihou-usermanage/xindaihou-usermanage.iml" filepath="$PROJECT_DIR$/xindaihou-usermanage/xindaihou-usermanage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xindaihou-web-util/xindaihou-web-util.iml" filepath="$PROJECT_DIR$/xindaihou-web-util/xindaihou-web-util.iml" />
+    </modules>
+  </component>
+</project>

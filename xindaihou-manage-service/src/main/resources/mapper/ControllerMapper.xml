@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.xindaihou.manage.mapper.ControllerMapper">
+    <resultMap id="nplmLoanContractMap" type="com.atguigu.xindaihou.bean.NplmLoanContract" autoMapping="true">
+        <id column="id" property="id"></id>
+        <collection property="nplmContractAttributeList" ofType="com.atguigu.xindaihou.bean.NplmContractAttribute" autoMapping="true">
+            <id property="id" column="id"></id>
+        </collection>
+        <collection property="nplmBorrowerInfoList" ofType="com.atguigu.xindaihou.bean.NplmBorrowerInfo" autoMapping="true">
+            <id property="id" column="id"></id>
+        </collection>
+    </resultMap>
+    <select id="selectNplmLoanContractList" resultMap="nplmLoanContractMap">
+        SELECT * FROM nplm_loan_contract nlc
+        INNER JOIN nplm_contract_attribute nca
+        ON nca.loan_contract_id=nlc.id
+        INNER JOIN nplm_borrower_info nbi
+        ON nlc.`borrower_id`=nbi.`id`
+    </select>
+
+</mapper>

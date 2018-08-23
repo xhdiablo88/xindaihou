@@ -1,0 +1,606 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0029)http://10.100.30.79:9099/smp/ -->
+<HTML><HEAD>
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE9" content="ie=edge"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<TITLE>成长企业贷合同修改</TITLE>
+<META content=no-cache http-equiv=Pragma>
+<META content=no-cache http-equiv=Cache-Control>
+<META content=0 http-equiv=Expires>
+
+<link rel="stylesheet" href="../ICPlatform/css/model.css" type="text/css">
+<link rel="stylesheet" href="../ICPlatform/css/model_info.css" type="text/css" ></link>
+<LINK rel=stylesheet type=text/css href="../smp_files/zTreeStyle.css">
+<link rel="stylesheet"  href="../ICPlatform/plugins/easyUI/themes/default/easyui.css" type="text/css">    
+<link rel="stylesheet" href="../ICPlatform/plugins/easyUI/themes/icon.css" type="text/css">  
+
+<script src="../ICPlatform/js/jquery-1.7.1.js" type="text/javascript"></script>
+<script src="../ICPlatform/js/easytooltip.js" type="text/javascript"></script>
+<script src="../ICPlatform/js/jquery.form.js" type="text/javascript"></script>
+<script src="../ICPlatform/plugins/easyUI/jquery.easyui.min.js" type="text/javascript"></script>
+<SCRIPT type=text/javascript src="../smp_files/easyui-lang-zh_CN.js"></SCRIPT>
+<script type="text/javascript" src="../smp_files/formValidatorRegex.js"></script>
+
+</head>
+<body>
+<title>车贷罚滞减免申请页面</title>
+
+<style type="text/css">
+td {
+	border:dotted 1px rgb(204,204,204);
+	font-size: 12px;
+}
+input {
+	font-size: 12px;
+}
+select {
+	font-size: 12px;
+}
+</style>
+
+<style type="text/css">
+.page_my {
+    width: 100%;
+	height: 100%;
+    margin: 0;
+	overflow-y: scroll;
+}
+
+
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('table').find('.datagrid-cell').css("text-align", 'center');
+});
+
+
+$(function(){
+	var fromDate;
+	
+	$('#idNumber').validatebox({
+		required: true,
+	    validType: 'idcard'
+	});
+
+	//客户姓名和证件号验证
+	$.extend($.fn.validatebox.defaults.rules, {   
+	    idcard : {   
+	        validator : function(value) { 
+	            return /^\d{15}(\d{2}[A-Za-z0-9])?$/i.test(value); 
+	        }, 
+	        message : '证件号码格式不正确' 
+		},
+		checkDateTime: {
+	        validator : function(value, param) {
+	        	fromDate = $(param[0]).val();
+	        	if (fromDate!=""){
+	        		if (fromDate.replace(/-/g,"") > value.replace(/-/g,"")){
+	        			return false;
+	        		} else {
+	        			return true;
+	        		}
+	        	} else {
+	        		return true;
+	        	}
+	        }, 
+	        message : '开始日期应小于结束日期' 
+		}
+	});	
+	
+}); 
+
+ //根据“实时划扣” 动态决定 “预约划扣时间” 的显示
+   function voluationKeap(){
+	switch($("input[name=keap]:checked").attr("id")){
+		case "keap1":
+
+   			//获取数据库系统当前时间
+   			var myDate = new Date(findDbSystemTime().replace(/-/g,"/"));
+   	    	var nowDateValue = myDate.toLocaleDateString().replace("年","-").replace("月","-").replace("日","")+" "+myDate.getHours()+':'+myDate.getMinutes()+':'+myDate.getSeconds();
+   	    	
+   	    	// 设置 预约划扣时间
+   	    	$("#chRepaymentDate1").datetimebox('setValue', '');
+   	    	$("#chRepaymentDate1").datetimebox('setValue', nowDateValue);
+   	    	
+   			//时分秒输入框不可用   			
+   			$("#chRepaymentDate1").datebox('disable');
+   			
+			break;
+		case "keap2":	
+   		    
+   		    // 设置 预约划扣时间
+   			$("#chRepaymentDate1").datetimebox('setValue', '');
+   			$("#chRepaymentDate1").datetimebox('setValue', "<f:formatDate value='${audBookRepayment.chRepaymentDate}' pattern='yyyy-MM-dd HH:mm:ss'/>");
+   			
+   			//时分秒输入框可用
+   			$("#chRepaymentDate1").datebox('enable');
+			break;
+		default:
+		break;
+	}
+  }
+</script>
+<style type="text/css">
+.page_my {
+    width: 100%;
+	height: 100%;
+    margin: 0;
+	overflow-y: scroll;
+}
+
+
+</style>
+<div>
+	            <table id="table_OperateBtn" border=0>
+	                <tbody><tr>
+	                    <td>
+	                    	<span id="submit_right">
+		                    	<a id="submit" href="#" class="easyui-linkbutton l-btn" onClick="commitDeratePayment();" group="">提交</a>
+		                        <a id="backButten" href="javascript:window.history.go(-1)" class="easyui-linkbutton l-btn" group="" >重置</a>
+								<a id="backButten" href="javascript:window.history.go(-1)" class="easyui-linkbutton l-btn" group="" >返回</a>
+	                        </span>
+	                    </td>	                    
+	                </tr>
+	            </tbody></table>
+            </div>
+            <div>&nbsp;</div>
+ 
+             <div>
+
+						<table id="table_">
+							<tbody><tr id="tr_cell">
+								<td id="title_background" colspan="12">成长企业贷合同信息：</td>
+							</tr>
+									 
+						   <tr id="tr_cell">
+						   	<td id="td_d">贷款品种：<span style="color:red;">&nbsp;*</span></td>
+							    <td  id="td_s2">
+										<input type="hidden" id="selectedOffice" name="selectedOffice" value="172,58,11,15,9,104,195,165,193,53,33,1,54,260,11011192,47,113,6,273,22,57,134,129,271,127,100,197,85,28,301,62,175,155,101,223,250,1,222,200,249,204,135,163,159,272,123,42,95,23,144,20,75,32,207,224,142,120,3,11011279,11009482,137,203,270,25,6,151,181,116,247,72,262,184,110,66,186,138,167,130,221,12,269,189,274,21,152,251,88,114,76,201,202,31,178,26,98,69,241,230,106,162,265,43,107,68,65,121,206,99,73,141,191,63,17,196,78,133,157,148,231,239,299,176,160,131,70,161,154,51,111,168,214,71,11011325,11110829,96,248,41,118,109,153,124,194,303,102,268,11011192,94,64,29,60,36,97,6,240,147,24,145,90,87,238,132,94,74,192,3,302,11011279,112,188,243,185,39,55,16,187,267,23,103,177,190,139,128,275,115,237,261,146,136,44,217,166,182,173,149,228,122,150,59,10,263,67,93,183,44,46,14,125,170,40,205,301,50,23,300,212,174,126,77,276,229,79,164,156,13,158,35,89,86,172"> 
+									<span id="searchbox" style="width:189px;"> 
+										<input id="searchbox-text" type="text" id="selectedOfficeName" name="selectedOfficeName" style="width:188px;" value="宜信公司，新薪贷......" readonly="readonly" data-options="required:'true'">
+										<span id="searchbox-button" onClick="deptree('open');"></span>
+									</span>
+								</td>	
+						   <td id="td_d">是否循环贷：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<select class="easyui-combobox combobox-f combo-f" id="type" style="width: 195px; display: none;" editable="fales" name="type">
+								<option value="0">否</option>
+								<option value="1">请选择</option>
+								<option value="2">否</option>	
+							</select>		
+						</td> 	
+						<td id="td_d">企业名称：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="信息">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11">
+						</td>	
+						<td id="td_d">企业所在城市：</td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="北京">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11">	
+						</td>	
+						</tr>
+						<tr>
+							<td id="td_d">客户姓名：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="韩显然">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11">	
+							</td>
+							<td id="td_d">证件类型：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2" width="12%">
+							  <select class="easyui-combobox combobox-f combo-f" id="type" style="width: 188px; display: none;" editable="fales" name="type">
+								<option value="0">身份证</option>
+								<option value="1">请选择</option>
+								<option value="2">军官证</option>
+								<option value="3">记者证</option>
+								<option value="4">护照</option>
+								<option value="5">驾照</option> 
+								
+							</select>
+							</td>	
+							
+						<td id="td_d">证件号：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+		    				<input  id="clientName" name="clientName" style="width:188px;" value="330327197706273449">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11">
+		    			</td>
+
+						<td id="td_d">城市地区：</td>
+							<td  id="td_s2">
+							<select class="easyui-combobox combobox-f combo-f" id="type" style="width: 195px; display: none;" editable="fales" name="type">
+								<option value="0">北京</option>
+								<option value="1">请选择</option>
+								<option value="2">上海</option>	
+							</select>		
+						</td> 
+
+
+	
+						</tr>
+						
+						<tr>	
+						
+						<td id="td_d">营业部：</td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="业务二部">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11">
+						</td>	
+						<td id="td_d">借款金额：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="¥20,000.00">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11">
+							</td>
+						<td id="td_d">请求放款时间：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2"> 
+
+							<input type="text" id="repaymentEnd" style="width: 188px; display: none;" class="easyui-datetimebox" value="2014-08-20" data-options="validType:'checkDateTime[\'#searchForm input[name=repaymentStart]\']'" comboname="repaymentEnd">
+						</td>
+						
+							<td id="td_d">放款金额：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="¥20,000.00">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11">
+						</td>
+						
+						
+						</tr>
+						
+						<tr>
+						<td id="td_d">分期数：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="12">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11">
+						</td>
+						<td id="td_d">还款起始日期：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input type="text" id="repaymentStart" style="width: 188px; display: none;" class="easyui-datebox" value="2014-08-10" comboname="repaymentStart">
+							
+							</td>
+
+							<td id="td_d">还款终止日期：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input type="text" id="repaymentStart" style="width: 188px; display: none;" class="easyui-datebox" value="2015-07-10" comboname="repaymentStart">
+
+							
+							</td>
+							
+							<td id="td_d">借款用途：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							  <select class="easyui-combobox combobox-f combo-f" id="type" style="width: 188px; display: none;" editable="fales" name="type">
+								<option value="0">消费</option>
+								<option value="1">请选择</option>
+								<option value="2">经营</option>
+								<option value="3">应急</option>
+								<option value="4">其他</option> 
+
+							</select>
+					
+
+							</td>	
+						</tr>	
+						<tr>	
+						<td id="td_d">借款子用途：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							  <select class="easyui-combobox combobox-f combo-f" id="type" style="width: 188px; display: none;" editable="fales" name="type">
+								<option value="0">教育和培训</option>
+								<option value="1">请选择</option>
+								<option value="2">结婚</option>
+								<option value="3">购房</option>
+								<option value="4">购车</option> 
+								<option value="5">装修</option> 
+							</select>
+							
+						</td>	
+							<td id="td_d">借款详细用途：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="上学">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11">
+							
+						</td>	
+						
+							<td id="td_d">月管理利率：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="0.1%">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11">
+							
+						</td>							
+						<td id="td_d">年利率：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="1.2%">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11">
+							
+						</td>	
+						</tr>	
+					 </tbody></table>
+                     </div><br>
+						
+				 <div>  
+					<table id="table_">
+							<tbody><tr id="tr_cell">
+								<td id="title_background" colspan="12">放款银行账户信息：</td>
+							</tr>			
+						
+						<tr>	
+						<td id="td_d">放款银行名称：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							 <input  id="clientName" name="clientName" style="width:188px;" value="420684196611109335">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11">
+							</td>	
+						<td id="td_d">放款银行行号：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="11123243">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11">
+							</td>	
+						<td id="td_d">放款账户姓名：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="唐宁">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11"> 
+							</td>	
+						<td id="td_d">放款银行：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							  <select class="easyui-combobox combobox-f combo-f" id="type" style="width: 188px; display: none;" editable="fales" name="type">
+								<option value="0">中国民生银行</option>
+								<option value="1">请选择</option>
+								<option value="2">中国工商银行</option>
+								<option value="3">中国银行</option>
+								<option value="4">招商银行</option> 
+								<option value="5">中国建设银行</option> 
+							</select>
+							</td>	
+						</tr>	
+						
+						<tr>	
+						<td id="td_d">放款银行账号：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="1234 345 2345 2343">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11"> 
+							</td>
+						<td id="td_d">放款银行所在省份：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="北京">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11"> 
+							</td>
+						<td id="td_d">放款银行所在城市：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="北京">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11"> 
+							</td>
+											
+						  <td id="td_d">放款卡折类型：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+                            <input type="radio" name="bank_book" id="bank_book1" value="0" checked="checked"/>卡
+                            <input type="radio" name="bank_book" id="bank_book2" value="1"/>存折
+                         </td>	
+						</tr>		
+					</tbody></table>
+                     </div><br>
+	
+		
+				 <div>  
+					<table id="table_">
+							<tbody><tr id="tr_cell">
+								<td id="title_background" colspan="12">还款银行账户信息：</td>
+							</tr>			
+						
+						<tr>	
+						<td id="td_d">还款开户行名称：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							 <input  id="clientName" name="clientName" style="width:188px;" value="招商银行">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11">
+							</td>	
+						<td id="td_d">还款银行行号：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="11123243">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11">
+							</td>	
+						<td id="td_d">还款人姓名：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="韩显然">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11"> 
+							</td>	
+						<td id="td_d">还款银行：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							  <select class="easyui-combobox combobox-f combo-f" id="type" style="width: 188px; display: none;" editable="fales" name="type">
+								<option value="0">中国民生银行</option>
+								<option value="1">请选择</option>
+								<option value="2">中国工商银行</option>
+								<option value="3">中国银行</option>
+								<option value="4">招商银行</option> 
+								<option value="5">中国建设银行</option> 
+							</select>
+							</td>	
+						</tr>	
+						
+						<tr>	
+						<td id="td_d">还款银行账号：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="6228 8888 8888 8888 888">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11"> 
+							</td>
+						<td id="td_d">还款银行所在省份：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="北京">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11"> 
+							</td>
+						<td id="td_d">还款银行所在城市：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="北京">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11"> 
+							</td>
+											
+						  <td id="td_d">还款卡折类型：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+                            <input type="radio" name="bank_book" id="bank_book1" value="0" checked="checked"/>卡
+                            <input type="radio" name="bank_book" id="bank_book2" value="1"/>存折
+                         </td>	
+						</tr>	
+
+						<tr>	
+						<td id="td_d">还款人证件类型：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							  <select class="easyui-combobox combobox-f combo-f" id="type" style="width: 188px; display: none;" editable="fales" name="type">
+								<option value="0">居民第二代身份证</option>
+								<option value="1">请选择</option>
+								<option value="2">军官证</option>
+								<option value="3">记者证</option>
+								<option value="4">护照</option>
+								<option value="5">驾照</option> 
+
+							</select>
+							</td>	
+						<td id="td_d">还款人证件号：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="324352452345234234">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11"> 
+							</td>
+						<td id="td_d">还款人证件有效期：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input type="text" id="repaymentStart" style="width: 85px; display: none;" class="easyui-datetimebox" value="" comboname="repaymentStart">
+							- 
+							<input type="text" id="repaymentEnd" style="width: 85px; display: none;" class="easyui-datetimebox" value="" data-options="validType:'checkDateTime[\'#searchForm input[name=repaymentStart]\']'" comboname="repaymentEnd">
+							</td>
+											
+						  <td id="td_d">共同借款人姓名：<span style="color:red;">&nbsp;*</span></td>
+							<td  id="td_s2">
+							<input  id="clientName" name="clientName" style="width:188px;" value="李牧">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11"> 
+							</td>
+						</tr>	
+
+						<tr>	
+						<tr id="tr_cell">
+							 <td id="td_d" >共同借款人证件号:<span style="color:red;">&nbsp;*</span></td>
+                        <td id="td_s2"  colspan="7" style="width:12%;">
+							<input  id="clientName" name="clientName" style="width:188px;" value="424352452345234234">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11"> 	
+						   </td> 
+						
+						</tr>	
+						
+					</tbody></table>
+                     </div><br>
+	
+	
+	
+	
+	
+	
+	
+				
+
+							<table id="table_">
+							<tbody><tr id="tr_cell">
+								<td id="title_background" colspan="12">申请信息：</td>
+							</tr>	
+	                        <table  id="table_">
+
+
+						<tr id="tr_cell">  
+                         <td id="td_c"  style="width:25%;" ><span style="color:red;">&nbsp;*</span>合同签订时间：</td>
+                         <td id="td_s2"  style="width:75%;">
+							<input type="text" id="repaymentEnd" style="width: 188px; display: none;" class="easyui-datetimebox" value="" data-options="validType:'checkDateTime[\'#searchForm input[name=repaymentStart]\']'" comboname="repaymentEnd">
+						</td>
+						 </tr>
+                        <tr>
+                         <td id="td_c"  style="width:25%;" ><span style="color:red;">&nbsp;*</span>签署地点：</td>
+                         <td id="td_s2"  style="width:75%;">
+							<input  id="clientName" name="clientName" style="width:188px;" value="北京">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11"> 
+							</td>	
+						
+						 </tr>
+						
+						
+                        <tr>
+                         <td id="td_c"  style="width:25%;" ><span style="color:red;">&nbsp;*</span>申请编号：</td>
+                         <td id="td_s2"  style="width:75%;">
+							<input  id="clientName" name="clientName" style="width:188px;" value="20141215">
+		    				<input type="hidden" id="pPage" name="pageSize" value=""> 
+		    				<input type="hidden" id="pSize" name="pageSize" value=""> 
+		    				<input type="hidden" id="sysId" name="sysId" value="11"> 
+							</td>		
+						 </tr>	
+							
+
+						  
+						  <tr id="tr_cell">
+                         <td id="td_c" style="width:25%;">图片：</td> 
+                         <td id="td_s2" style="width:75%;" colspan="3">
+							<a href="#" onClick="openLoadPicture(&#39;upLoad&#39;)">上传</a>
+							<a style="color:#999999;font-style:normal;font-size:12px;">(上传文件名以<span style="color: red;">[M1-]</span>开头)</a>
+							<a href="" onClick="openLoadPicture(&#39;reView&#39;)">浏览</a>
+                         </td>
+                         
+                    </tr>
+						  
+				     <tr id="tr_cell">
+                         <td id="td_c"  style="width:25%;" >申请注记：</td>
+                         <td id="td_s2"  style="width:75%;">
+									 <textarea colspan="3" style="width:95%;" name="remarks" id="remarks" class="easyui-validatebox validatebox-text" data-options="required:&#39;true&#39;,validType:&#39;remarks&#39;"></textarea>	 
+                         </td>
+                     </tr>
+						 
+					  </tbody>
+				 </table>
+            </div>			
+								
+<div>&nbsp;</div>
+
+
+
+
+	</body></html>
